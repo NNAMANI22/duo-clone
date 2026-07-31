@@ -140,6 +140,16 @@ Use StyleSheet or inline styles for:
 
 Everywhere else, use NativeWind.
 
+### Known Issue: NativeWind preview build breaks Text/layout on Android
+
+`src/app/onboarding.tsx` uses `style` + `src/theme` tokens instead of NativeWind classNames, which normally contradicts the rule above. This is intentional, not an oversight:
+
+- On-device testing (Android) showed the installed NativeWind version (`5.0.0-preview.4`) fails to render `Text` sized via custom `@utility` typography classes (`text-h1`, `text-h2`, `text-h3`, `text-h4`, `text-body-lg`, `text-body-md`, `text-caption`) — the text is invisible in normal document flow. `text-body-sm` inside an absolutely-positioned parent was the only one that worked.
+- `flex: 1` expansion also did not reliably fill remaining screen height on-device, even though it worked correctly in the web preview.
+- Confirmed the bug is in the library, not stale caching or app code, by verifying a plain inline-styled `Text` rendered fine while className-styled `Text` next to it did not.
+
+**Do not "fix" `onboarding.tsx` back to NativeWind classNames** — that will reintroduce the bug. If the same symptoms (invisible `Text`, `flex: 1` not expanding) show up on another screen on a real device, apply the same workaround there: `style` with `src/theme` tokens (`colors`, `typography`) instead of the typography/layout classNames, keeping NativeWind for everything else (backgrounds, borders, static Pressable styling, etc). Revisit this once NativeWind ships a stable (non-preview) release and re-test before reverting.
+
 ---
 
 ## Image Rule
