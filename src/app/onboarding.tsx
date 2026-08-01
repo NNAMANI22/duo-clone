@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { Image, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -19,6 +19,8 @@ const speechBubbles = [
 ];
 
 export default function Onboarding() {
+  const router = useRouter();
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       <Stack.Screen options={{ headerShown: false }} />
@@ -83,6 +85,7 @@ export default function Onboarding() {
         </View>
 
         <Pressable
+          onPress={() => router.push("/sign-up")}
           style={({ pressed }) => ({
             position: "absolute",
             left: 24,
